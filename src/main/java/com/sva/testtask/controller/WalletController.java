@@ -3,7 +3,9 @@ package com.sva.testtask.controller;
 import com.sva.testtask.dto.WalletCreateDto;
 import com.sva.testtask.dto.WalletRequestDto;
 import com.sva.testtask.dto.WalletResponseDto;
+import com.sva.testtask.exception.ValidationException;
 import com.sva.testtask.service.WalletService;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +30,14 @@ public class WalletController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/api/v1/wallets/{wallet_uuid}")
-    public ResponseEntity<WalletResponseDto> getWalletBalance(@PathVariable UUID walletUuid) {
-
-        return ResponseEntity.ok().body(walletService.getWalletBalance(walletUuid));
+    @GetMapping("/api/v1/wallets/{walletUuid}")
+    public ResponseEntity<WalletResponseDto> getWalletBalance(@PathVariable String walletUuid) {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(walletUuid);
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Невалидный UUID!");
+        }
+        return ResponseEntity.ok().body(walletService.getWalletBalance(uuid));
     }
 }

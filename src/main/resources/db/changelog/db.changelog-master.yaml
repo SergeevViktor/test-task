@@ -1,4 +1,4 @@
-databaseChangelog:
+databaseChangeLog:
   - changeSet:
       id: DEV-1
       author: equalizer
@@ -10,7 +10,7 @@ databaseChangelog:
               - column:
                   name: id
                   type: UUID
-                  autoIncrement: true
+                  autoIncrement: false
                   constraints:
                     primaryKey: true
                     primaryKeyName: wallet_pk

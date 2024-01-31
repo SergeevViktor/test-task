@@ -4,6 +4,9 @@ import com.sva.testtask.dto.WalletCreateDto;
 import com.sva.testtask.dto.WalletRequestDto;
 import com.sva.testtask.dto.WalletResponseDto;
 import com.sva.testtask.entity.Wallet;
+import com.sva.testtask.exception.AppError;
+import com.sva.testtask.exception.NotFoundException;
+import com.sva.testtask.exception.ValidationException;
 import com.sva.testtask.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,15 +23,15 @@ public class WalletServiceImpl implements WalletService {
     public Wallet getWallet(UUID uuid) {
         Optional<Wallet> walletOptional = walletRepository.findById(uuid);
         if (walletOptional.isEmpty()) {
-            //throw new
+            throw new NotFoundException("Такого кошелька не сушествует!");
         }
         return walletOptional.get();
     }
 
     @Override
     public WalletResponseDto createWallet(WalletCreateDto walletCreateDto) {
-        if (walletCreateDto == null) {
-            //throw new
+        if (walletCreateDto.getAccount() == null) {
+            throw new AppError("Значение 'account' не может быть пустым!");
         }
         UUID uuid = UUID.randomUUID();
         Wallet wallet = Wallet.builder()
@@ -47,14 +50,21 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public void updateWallet(WalletRequestDto walletRequestDto) {
         Wallet wallet = getWallet(walletRequestDto.getId());
-        long result = wallet.getAccount();
-        if (result > walletRequestDto.getAmount()) {
-            //throw new
+        if (walletRequestDto.getAmount() == null) {
+            throw new AppError("Значение 'amount' не может быть пустым!");
         }
+        long result = wallet.getAccount();
+        long amount = walletRequestDto.getAmount();
 
         switch (validationOperationType(walletRequestDto.getOperationType())) {
-            case "DEPOSIT" -> result += walletRequestDto.getAmount();
-            case "WITHDRAW" -> result -= walletRequestDto.getAmount();
+            case "DEPOSIT" -> result += amount;
+            case "WITHDRAW" -> {
+                if (result < amount) {
+                    throw new ValidationException("Баланса кошелька недостаточно для списания!");
+                } else {
+                    result -= amount;
+                }
+            }
         }
         wallet.setAccount(result);
 
@@ -73,7 +83,7 @@ public class WalletServiceImpl implements WalletService {
 
     private String validationOperationType(String s) {
         if (!s.equals("DEPOSIT") && !s.equals("WITHDRAW")) {
-            //throw new
+            throw new ValidationException("Операция должна быть DEPOSIT или WITHDRAW!");
         }
 
         return s;
