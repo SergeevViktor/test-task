@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   test-task:
-    build: ./test-task
+    build: src/
     image: test-task
     container_name: test-task
     restart: on-failure
@@ -19,7 +19,7 @@ services:
     image: postgres:14-alpine
     container_name: tt-db
     volumes:
-      - /var/lib/postgresql/data/
+      - var/lib/postgresql/data/
     ports:
       - "6540:5432"
     environment:
