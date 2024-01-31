@@ -5,7 +5,6 @@ import com.sva.testtask.dto.WalletRequestDto;
 import com.sva.testtask.dto.WalletResponseDto;
 import com.sva.testtask.exception.ValidationException;
 import com.sva.testtask.service.WalletService;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
