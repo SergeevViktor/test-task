@@ -52,9 +52,9 @@ public class WalletServiceImpl implements WalletService {
             //throw new
         }
 
-        switch (walletRequestDto.getOperationType().toLowerCase()) {
-            case "deposit" -> result += walletRequestDto.getAmount();
-            case "withdraw" -> result -= walletRequestDto.getAmount();
+        switch (validationOperationType(walletRequestDto.getOperationType())) {
+            case "DEPOSIT" -> result += walletRequestDto.getAmount();
+            case "WITHDRAW" -> result -= walletRequestDto.getAmount();
         }
         wallet.setAccount(result);
 
@@ -69,5 +69,13 @@ public class WalletServiceImpl implements WalletService {
                 .id(wallet.getId())
                 .account(wallet.getAccount())
                 .build();
+    }
+
+    private String validationOperationType(String s) {
+        if (!s.equals("DEPOSIT") && !s.equals("WITHDRAW")) {
+            //throw new
+        }
+
+        return s;
     }
 }

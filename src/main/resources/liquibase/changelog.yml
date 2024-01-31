@@ -1,0 +1,22 @@
+databaseChangelog:
+  - changeSet:
+      id: DEV-1
+      author: equalizer
+      changes:
+        - createTable:
+            tableName: wallet
+            remarks: Кошельки
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: wallet_pk
+                    nullable: false
+              - column:
+                  name: account
+                  type: bigint
+                  constraints:
+                    nullable: false

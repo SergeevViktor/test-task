@@ -1,0 +1,32 @@
+version: '3.1'
+services:
+  test-task:
+    build: ./test-task
+    image: test-task
+    container_name: test-task
+    restart: on-failure
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - tt-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://tt-db:5432/tt
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+
+  tt-db:
+    image: postgres:14-alpine
+    container_name: tt-db
+    volumes:
+      - /var/lib/postgresql/data/
+    ports:
+      - "6540:5432"
+    environment:
+      - POSTGRES_DB=tt
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+
+
+
+
