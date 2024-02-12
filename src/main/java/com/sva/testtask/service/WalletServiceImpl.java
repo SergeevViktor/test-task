@@ -10,6 +10,8 @@ import com.sva.testtask.exception.ValidationException;
 import com.sva.testtask.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +50,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, timeout = 5)
     public void updateWallet(WalletRequestDto walletRequestDto) {
         Wallet wallet = getWallet(walletRequestDto.getId());
         if (walletRequestDto.getAmount() == null) {
